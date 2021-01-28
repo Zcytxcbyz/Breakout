@@ -47,7 +47,7 @@ public:
     virtual bool init();
     virtual void update(float dt);
     // a selector callback
-    void menuBackCallback(Ref* pSender);
+    void buttonBackCallback(Ref* pSender);
     void LeftMovePlatform(float dt);
     void RightMovePlatform(float dt);
     void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);

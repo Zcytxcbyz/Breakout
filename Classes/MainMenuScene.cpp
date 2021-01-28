@@ -52,7 +52,7 @@ bool MainMenu::init()
     }
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	auto cclayer = CCLayerColor::create(ccc4(255, 127, 80, 255));
+	auto cclayer = CCLayerColor::create(ccc4(70, 130, 180, 255));
 	this->addChild(cclayer);
 	auto label = Label::createWithTTF("Breakout", "fonts/Marker Felt.ttf", 64);
 	if (label == nullptr)

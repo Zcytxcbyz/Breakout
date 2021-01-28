@@ -21,8 +21,10 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  ****************************************************************************/
+#include "ui/CocosGUI.h"
 #include "MainScene.h"
 #include "MainMenuScene.h"
+#include "GameResultScene.h"
 #include "SimpleAudioEngine.h"
 USING_NS_CC;
 
@@ -66,14 +68,19 @@ bool Main::init()
     scoreNum->setPosition(Vec2(origin.x + visibleSize.width - scoreNum->getContentSize().width / 2 - 20,
         origin.y + visibleSize.height - 15));
 	this->addChild(scoreNum);
-	auto backItem = MenuItemImage::create("normal_backButton.png", "selected_backButton.png", CC_CALLBACK_1(Main::menuBackCallback, this));
-	backItem->setPosition(Vec2(origin.x + backItem->getContentSize().width / 2 + 20,
-		origin.y + visibleSize.height - 15));
-	auto menu = Menu::create(backItem, NULL);
-	menu->setPosition(Vec2::ZERO);
-	this->addChild(menu);
+// 	auto backItem = MenuItemImage::create("normal_backButton.png", "selected_backButton.png", CC_CALLBACK_1(Main::menuBackCallback, this));
+// 	backItem->setPosition(Vec2(origin.x + backItem->getContentSize().width / 2 + 20,
+// 		origin.y + visibleSize.height - 15));
+// 	auto menu = Menu::create(backItem, NULL);
+// 	menu->setPosition(Vec2::ZERO);
+// 	this->addChild(menu);
+    auto backButton = ui::Button::create("normal_backButton.png", "selected_backButton.png","disabled_backButton.png");
+    backButton->setPosition(Vec2(origin.x + backButton->getContentSize().width / 2 + 20,
+        origin.y + visibleSize.height - 15));
+    backButton->addClickEventListener(CC_CALLBACK_1(Main::buttonBackCallback, this));
+    this->addChild(backButton);
 	auto edgeSpace = Sprite::create();
-    auto boundBody = PhysicsBody::createEdgeBox(Size(clientSize.width, clientSize.height + 1000));
+    auto boundBody = PhysicsBody::createEdgeBox(Size(clientSize.width, clientSize.height + 200));
     boundBody->getShape(0)->setRestitution(1.0f);
     boundBody->getShape(0)->setFriction(0.0f);
     boundBody->getShape(0)->setDensity(1.0f);
@@ -81,7 +88,7 @@ bool Main::init()
     boundBody->setContactTestBitmask(0x00);
     boundBody->setCollisionBitmask(0x02);
 	edgeSpace->setPhysicsBody(boundBody);
-    edgeSpace->setPosition(Vec2(origin.x + clientSize.width / 2, origin.y + clientSize.height / 2 - 500));
+    edgeSpace->setPosition(Vec2(origin.x + clientSize.width / 2, origin.y + clientSize.height / 2 - 100));
 	this->addChild(edgeSpace);
     platform = Sprite::create("platform.png");
     platform->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + platform->getContentSize().height));
@@ -142,7 +149,7 @@ void Main::RightMovePlatform(float dt)
     }
 }
 
-void Main::menuBackCallback(Ref* pSender) 
+void Main::buttonBackCallback(Ref* pSender)
 {
     Director::getInstance()->replaceScene(MainMenu::createScene());
 }
@@ -154,7 +161,7 @@ void Main::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
         if (!ballActived) 
         {
             ballBody->setVelocity(Vec2(-100, 100));
-            ballBody->applyImpulse(Vect(10000.0f, 10000.0f));
+            ballBody->applyImpulse(Vect(-10000.0f, 10000.0f));
             ballActived = true;
         }
     }
@@ -273,18 +280,12 @@ void Main::update(float dt)
     {
 		this->unscheduleUpdate();
 		ball->removeFromParentAndCleanup(true);
-        char message[50];
-        sprintf_s(message, "You win!\nScore: %d", score);
-        MessageBox(message, "Message");
-        Director::getInstance()->replaceScene(MainMenu::createScene());
+        Director::getInstance()->replaceScene(GameResult::createScene(true, score));
     }
     if (ball->getPositionY() < origin.y-ball->getContentSize().height / 2)
     {
 		this->unscheduleUpdate();
 		ball->removeFromParentAndCleanup(true);
-		char message[50];
-		sprintf_s(message, "Game over.\nScore: %d", score);
-		MessageBox(message, "Message");
-        Director::getInstance()->replaceScene(MainMenu::createScene());
-    }
+		Director::getInstance()->replaceScene(GameResult::createScene(false, score));
+	}
 }

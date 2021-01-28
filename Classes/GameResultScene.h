@@ -26,16 +26,17 @@
 #define __GAMERESULT_SCENE_H__
 
 #include "cocos2d.h"
-
 class GameResult : public cocos2d::Scene
 {
 public:
-    static cocos2d::Scene* createScene();
-
-    virtual bool init();
+    int scoreNum;
+    bool isVictory;
+    static Scene* createScene(bool isVictory, int score);
+    void initialize();
     
     // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
+    void buttonRestartClick(cocos2d::Ref* pSender);
+    void buttonBackClick(cocos2d::Ref* pSender);
     
     // implement the "static create()" method manually
     CREATE_FUNC(GameResult);
